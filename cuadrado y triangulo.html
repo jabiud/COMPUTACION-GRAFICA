@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUADRADO Y TRIANGULO</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;   /* centra horizontalmente */
+            justify-content: center; /* centra verticalmente */
+            height: 100vh; /* ocupa toda la pantalla */
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        a {
+            margin-top: 20px; 
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+}
+
+a:hover {
+    background-color: #0056b3;
+}
+    </style>
+</head>
+<body>
+
+    <h2>CUADRADO Y TRIÁNGULO SEPARADOS</h2>
+    <H2>REALIZADO POR: JOSEPH ABIUD CRUZ ACEVEDO</H2>
+
+    <canvas id="myCanvas" width="500" height="500" style="border:4px solid black;"></canvas>
+<a href="index.html">⬅ Volver al menú</a>
+    <script>
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        var centerX = canvas.width / 2;
+
+        // SOMBRA
+        ctx.shadowColor = "rgba(0,0,0,0.2)";
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+
+        // CUADRADO
+        var x = centerX - 75;
+        var y = 50;
+        var w = 150;
+        var h = 150;
+        var r = 20;
+
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+
+        ctx.fillStyle = "#87CEEB";
+        ctx.fill();
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // LÍNEA
+        var lineY = y + h + 30;
+
+        ctx.beginPath();
+        ctx.moveTo(0, lineY);
+        ctx.lineTo(canvas.width, lineY);
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // TRIÁNGULO
+        var tY = lineY + 40;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, tY);
+        ctx.lineTo(centerX + 80, tY + 120);
+        ctx.lineTo(centerX - 80, tY + 120);
+        ctx.closePath();
+
+        ctx.fillStyle = "#FFD54F";
+        ctx.fill();
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SENO Y COSENO</title>
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(to right, #ece9e6, #ffffff);
+        font-family: Arial;
+    }
+
+    h2 {
+        margin: 5px;
+        text-align: center;
+    }
+
+    canvas {
+        border: 3px solid black;
+        border-radius: 12px;
+        background: #ffffff;
+        margin-top: 10px;
+    }
+    a {
+            margin-top: 20px; 
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px; 
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+</style>
+</head>
+
+<body>
+
+<h2>SENO Y COSENO EN PLANO CARTESIANO</h2>
+<h2>REALIZADO POR: JOSEPH ABIUD CRUZ ACEVEDO</h2>
+
+<canvas id="myCanvas" width="800" height="400"></canvas>
+<a href="index.html">⬅ Volver al menú</a>
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+var centerX = canvas.width / 2;
+var centerY = canvas.height / 2;
+
+var step = 1;
+var time = 0;
+
+// CUADRÍCULA
+function drawGrid() {
+    ctx.strokeStyle = "#cc7a00";
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x <= canvas.width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+
+    for (let y = 0; y <= canvas.height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+}
+
+// EJES
+function drawAxes() {
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+
+    // eje X
+    ctx.beginPath();
+    ctx.moveTo(0, centerY);
+    ctx.lineTo(canvas.width, centerY);
+    ctx.stroke();
+
+    // eje Y
+    ctx.beginPath();
+    ctx.moveTo(centerX, 0);
+    ctx.lineTo(centerX, canvas.height);
+    ctx.stroke();
+}
+
+// NÚMEROS
+function drawNumbers() {
+    ctx.fillStyle = "#555";
+    ctx.font = "12px Arial";
+
+    // eje X
+    for (let x = -centerX; x <= centerX; x += 80) {
+        let canvasX = centerX + x;
+        ctx.fillText(x / 40, canvasX, centerY + 15);
+    }
+
+    // eje Y
+    for (let y = -centerY; y <= centerY; y += 80) {
+        let canvasY = centerY - y;
+        if (y !== 0) {
+            ctx.fillText(y / 40, centerX + 5, canvasY);
+        }
+    }
+}
+
+// FUNCIONES
+function drawGraph() {
+
+    // -------- SENO (VERDE) --------
+    ctx.beginPath();
+    ctx.strokeStyle = "#00e676";
+    ctx.lineWidth = 3;
+
+    ctx.shadowColor = "#00e676";
+    ctx.shadowBlur = 12;
+
+    let first = true;
+
+    for (let x = -centerX; x < centerX; x += step) {
+        let y = Math.sin(x * 0.02 + time) * 80;
+
+        let canvasX = centerX + x;
+        let canvasY = centerY - y;
+
+        if (first) {
+            ctx.moveTo(canvasX, canvasY);
+            first = false;
+        } else {
+            ctx.lineTo(canvasX, canvasY);
+        }
+    }
+
+    ctx.stroke();
+
+    // -------- COSENO (AZUL) --------
+    ctx.beginPath();
+    ctx.strokeStyle = "#2979ff";
+    ctx.lineWidth = 3;
+
+    ctx.shadowColor = "#2979ff";
+    ctx.shadowBlur = 12;
+
+    first = true;
+
+    for (let x = -centerX; x < centerX; x += step) {
+        let y = Math.cos(x * 0.02 + time) * 80;
+
+        let canvasX = centerX + x;
+        let canvasY = centerY - y;
+
+        if (first) {
+            ctx.moveTo(canvasX, canvasY);
+            first = false;
+        } else {
+            ctx.lineTo(canvasX, canvasY);
+        }
+    }
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+}
+
+// ANIMACIÓN
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawGrid();
+    drawAxes();
+    drawNumbers();
+    drawGraph();
+
+    time += 0.05;
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>

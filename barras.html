@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GRÁFICO DE BARRAS</title>
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(to right, #ece9e6, #ffffff);
+        font-family: Arial;
+    }
+
+    h2 {
+        margin-bottom: 15px;
+    }
+
+    canvas {
+        border: 4px solid #000000;
+        border-radius: 12px;
+        background: #f5f5f5;
+    }
+    a {
+            margin-top: 20px; 
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px; 
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+</style>
+</head>
+
+<body>
+
+<h2>GRÁFICO DE BARRAS</h2>
+<H2>REALIZADO POR: JOSEPH ABIUD CRUZ ACEVEDO</H2>
+<canvas id="canvas" width="600" height="400"></canvas>
+<a href="index.html">⬅ Volver al menú</a>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+// Datos
+const values = [50, 60, 70, 90, 100];
+const colors = [
+    ["#ff4d4d", "#b30000"],   // rojo
+    ["#4d4dff", "#0000b3"],   // azul
+    ["#00cc44", "#006622"],   // verde
+    ["#ffb84d", "#cc7a00"],   // naranja
+    ["#cc33cc", "#660066"]    // morado
+    
+];
+
+const centerX = canvas.width / 2;
+const chartWidth = 400;
+const chartHeight = 250;
+
+const startX = (canvas.width - chartWidth) / 2;
+const startY = (canvas.height - chartHeight) / 2 + 40;
+
+const barWidth = 50;
+const gap = 25;
+
+// Dibujar barras
+values.forEach((value, i) => {
+
+    let height = (value / 100) * chartHeight;
+
+    let x = startX + i * (barWidth + gap) + 20;
+    let y = startY + chartHeight - height;
+
+    // sombra
+    ctx.shadowColor = "rgba(0,0,0,0.3)";
+    ctx.shadowBlur = 10;
+
+    // degradado
+    let grad = ctx.createLinearGradient(0, y, 0, y + height);
+    grad.addColorStop(0, colors[i][0]);
+    grad.addColorStop(1, colors[i][1]);
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, y, barWidth, height);
+
+    // quitar sombra
+    ctx.shadowBlur = 0;
+
+    // borde
+    ctx.strokeStyle = "#333";
+    ctx.strokeRect(x, y, barWidth, height);
+
+    // texto arriba
+    ctx.fillStyle = "#2e7d32";
+    ctx.font = "bold 14px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(value + "%", x + barWidth / 2, y - 10);
+});
+
+</script>
+
+</body>
+</html>

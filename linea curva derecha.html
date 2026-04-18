@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LINEA CURVA HACIA DERECHA</title>
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(to right, #ece9e6, #ffffff);
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        margin: 5px;
+    }
+
+    canvas {
+        border: 3px solid black;
+        border-radius: 12px;
+        background: #fafafa;
+        margin-top: 15px;
+    }
+    a {
+            margin-top: 20px; 
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px; 
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+</style>
+</head>
+
+<body>
+
+<h2>LINEA CURVA HACIA DERECHA</h2>
+<h2>REALIZADO POR: JOSEPH ABIUD CRUZ ACEVEDO</h2>
+
+<canvas id="canvas" width="500" height="500"></canvas>
+<a href="index.html">⬅ Volver al menú</a>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+// CENTRO
+var centerX = 250;
+var centerY = 250;
+
+// Ejes más suaves
+ctx.beginPath();
+ctx.strokeStyle = "#888";
+ctx.lineWidth = 1.5;
+
+ctx.moveTo(0, centerY);
+ctx.lineTo(500, centerY);
+
+ctx.moveTo(centerX, 0);
+ctx.lineTo(centerX, 500);
+
+ctx.stroke();
+
+// Punto en el origen
+ctx.beginPath();
+ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+ctx.fillStyle = "red";
+ctx.fill();
+
+// Curva (parábola)
+ctx.beginPath();
+ctx.strokeStyle = "#1e88e5"; // azul moderno
+ctx.lineWidth = 3;
+
+let firstPoint = true;
+
+for (let y = -25; y <= 25; y += 0.1) {
+    let x = (y * y);
+
+    let X = centerX + x * 0.5;
+    let Y = centerY - y * 7;
+
+    if (firstPoint) {
+        ctx.moveTo(X, Y);
+        firstPoint = false;
+    } else {
+        ctx.lineTo(X, Y);
+    }
+}
+
+ctx.stroke();
+</script>
+
+</body>
+</html>
