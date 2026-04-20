@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>GRÁFICO DE PUNTOS EN MOV.</title>
+
+<style>
+body{
+    background: linear-gradient(135deg,#5d82a7,#6ad4bf);
+    text-align:center;
+    font-family:Arial;
+}
+/* BOTON VOLVER 🔥 */
+.volver{
+    position:absolute;
+    top:20px;
+    left:20px;
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    background:#ff4d4d;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+    transition:0.3s;
+}
+.volver:hover{
+    background:#cc0000;
+    transform:scale(1.1);
+}
+
+/* CANVAS ESTILO HOJA */
+canvas{
+    background:#f5f5f5; /* fondo claro 🔥 */
+    border-radius:20px;
+    border:3px solid #333;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+    margin-top:20px;
+}
+
+.controles{
+    margin-top:15px;
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.iniciar{background:#00cc66;}
+.pausar{background:#ff4d4d;}
+.limpiar{background:#3399ff;}
+</style>
+</head>
+
+<body>
+<!-- BOTON VOLVER 🔙 -->
+<button class="volver" onclick="volver()">⬅ Volver</button>
+<h2>GRÁFICO DE PUNTOS EN MOVIMIENTO</h2>
+<H2>REALIZADO POR: JOSEPH ABIUD CRUZ ACEVEDO</H2>
+
+<canvas id="lienzo" width="800" height="400"></canvas>
+
+<div class="controles">
+    <button class="iniciar" onclick="iniciar()">▶ Iniciar</button>
+    <button class="pausar" onclick="pausar()">⏸ Pausar</button>
+    <button class="limpiar" onclick="limpiar()">🧹 Limpiar</button>
+</div>
+
+<script>
+const canvas = document.getElementById("lienzo");
+const ctx = canvas.getContext("2d");
+
+const escala = 40;
+const NUM_PUNTOS = 5;
+
+let puntos = [];
+let intervalo = null;
+
+/* CONVERSIÓN */
+function toPixelX(x){
+    return canvas.width/2 + x*escala;
+}
+function toPixelY(y){
+    return canvas.height/2 - y*escala;
+}
+
+/* CUADRICULA */
+function dibujarCuadricula(){
+    ctx.lineWidth = 1;
+
+    for(let x = 0; x <= canvas.width; x += escala){
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,canvas.height);
+
+        ctx.strokeStyle = "rgba(0,0,0,0.1)";
+        ctx.stroke();
+    }
+
+    for(let y = 0; y <= canvas.height; y += escala){
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(canvas.width,y);
+
+        ctx.strokeStyle = "rgba(0,0,0,0.1)";
+        ctx.stroke();
+    }
+}
+
+/* EJES + ETIQUETAS */
+function dibujarEjes(){
+    ctx.strokeStyle="black";
+    ctx.lineWidth=2;
+
+    // eje X
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height/2);
+    ctx.lineTo(canvas.width, canvas.height/2);
+    ctx.stroke();
+
+    // eje Y
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2, 0);
+    ctx.lineTo(canvas.width/2, canvas.height);
+    ctx.stroke();
+
+    // etiquetas
+    ctx.fillStyle="black";
+    ctx.font="bold 14px Arial";
+
+    ctx.fillText("Eje X", canvas.width - 60, canvas.height/2 - 10);
+    ctx.fillText("Eje Y", canvas.width/2 + 10, 20);
+}
+
+/* NUMEROS */
+function dibujarNumeros(){
+    ctx.fillStyle="black";
+    ctx.font="12px Arial";
+
+    let maxX = Math.floor(canvas.width/(2*escala));
+    let maxY = Math.floor(canvas.height/(2*escala));
+
+    // eje X
+    for(let x=-maxX; x<=maxX; x++){
+        let px = toPixelX(x);
+        ctx.fillText(x, px-5, canvas.height/2 + 15);
+    }
+
+    // eje Y
+    for(let y=-maxY; y<=maxY; y++){
+        let py = toPixelY(y);
+        if(y !== 0){
+            ctx.fillText(y, canvas.width/2 + 5, py+3);
+        }
+    }
+}
+
+/* CREAR PUNTOS */
+function crearPuntos(){
+    puntos = [];
+    for(let i=0;i<NUM_PUNTOS;i++){
+        puntos.push({
+            x: Math.floor(Math.random()*10 - 5),
+            y: Math.floor(Math.random()*6 - 3)
+        });
+    }
+}
+
+/* DIBUJAR PUNTOS */
+function dibujarPuntos(){
+    puntos.forEach(p=>{
+        let px = toPixelX(p.x);
+        let py = toPixelY(p.y);
+
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI*2);
+        ctx.fillStyle="#0077ff";
+        ctx.fill();
+
+        ctx.fillStyle="black";
+        ctx.fillText(`(${p.x},${p.y})`, px+8, py-8);
+    });
+}
+
+/* MOVER */
+function moverPuntos(){
+    puntos.forEach(p=>{
+        p.x += Math.floor(Math.random()*3 - 1);
+        p.y += Math.floor(Math.random()*3 - 1);
+    });
+}
+
+/* UPDATE */
+function actualizar(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    dibujarCuadricula();
+    dibujarEjes();
+    dibujarNumeros();
+    moverPuntos();
+    dibujarPuntos();
+}
+
+/* BOTONES */
+function iniciar(){
+    if(!intervalo){
+        crearPuntos();
+        intervalo = setInterval(actualizar,1000);
+    }
+}
+
+function pausar(){
+    clearInterval(intervalo);
+    intervalo = null;
+}
+
+function limpiar(){
+    pausar();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    dibujarCuadricula();
+    dibujarEjes();
+    dibujarNumeros();
+}
+/* FUNCION VOLVER 🔙 */
+function volver(){
+    window.location.href = "../actividad 4.html";
+}
+/* INIT */
+dibujarCuadricula();
+dibujarEjes();
+dibujarNumeros();
+</script>
+
+</body>
+</html>
