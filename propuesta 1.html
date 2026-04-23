@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Traslación en eje X</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+}
+
+/* Botón volver */
+.volver{
+    position:absolute;
+    top:20px;
+    left:20px;
+    padding:10px 15px;
+    background:#ff4d4d;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* Texto de posición */
+.info{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    color:white;
+    background:rgba(0,0,0,0.4);
+    padding:10px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<button class="volver" onclick="window.location.href='actividad 5.html'">
+⬅ Volver
+</button>
+
+<div class="info" id="info">Posición X: 0</div>
+
+<!-- Librería 3D -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+
+// Escena donde estarán los objetos
+const scene = new THREE.Scene();
+
+// Cámara que permite visualizar la escena
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    1000
+);
+
+// Renderizador que dibuja en pantalla
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Geometría del cubo
+const geometry = new THREE.BoxGeometry();
+
+// Material del cubo (color y acabado)
+const material = new THREE.MeshStandardMaterial({
+    color:0x00ffcc
+});
+
+// Creación del cubo
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+// Luz para poder ver el cubo
+const light = new THREE.DirectionalLight(0xffffff,1);
+light.position.set(5,5,5);
+scene.add(light);
+
+// Luz ambiente suave
+scene.add(new THREE.AmbientLight(0xffffff,0.3));
+
+// Crear eje X (línea roja)
+const materialEje = new THREE.LineBasicMaterial({color:0xff0000});
+
+const puntos = [];
+puntos.push(new THREE.Vector3(-5,0,0));
+puntos.push(new THREE.Vector3(5,0,0));
+
+const geometryEje = new THREE.BufferGeometry().setFromPoints(puntos);
+const ejeX = new THREE.Line(geometryEje, materialEje);
+
+scene.add(ejeX);
+
+// Posición de la cámara
+camera.position.set(0,2,6);
+
+// Variables de movimiento (traslación)
+let velocidad = 0.04;
+let limite = 4;
+
+// Referencia al texto
+const info = document.getElementById("info");
+
+// Animación continua
+function animar(){
+    requestAnimationFrame(animar);
+
+    // Movimiento en el eje X (traslación)
+    cube.position.x += velocidad;
+
+    // Cambio de dirección cuando llega al límite
+    if(cube.position.x > limite || cube.position.x < -limite){
+        velocidad *= -1;
+    }
+
+    // Mostrar posición en pantalla
+    info.textContent = "Posición X: " + cube.position.x.toFixed(2);
+
+    renderer.render(scene, camera);
+}
+
+animar();
+
+// Ajuste al cambiar tamaño de pantalla
+window.addEventListener("resize", ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+</script>
+
+</body>
+</html>

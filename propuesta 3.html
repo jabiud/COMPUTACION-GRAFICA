@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Transformaciones 3D</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+}
+
+/* Botón volver */
+.volver{
+    position:absolute;
+    top:20px;
+    left:20px;
+    padding:10px 15px;
+    background:#ff4d4d;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* Panel info */
+.info{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    color:white;
+    background:rgba(0,0,0,0.4);
+    padding:10px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<button class="volver" onclick="window.location.href='actividad 5.html'">
+⬅ Volver
+</button>
+
+<div class="info" id="info">
+Usa teclado: WASD mover | Q/E rotar | Z/X escalar
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+
+// Escena
+const scene = new THREE.Scene();
+
+// Cámara
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    1000
+);
+
+// Render
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Cubo
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshStandardMaterial({color:0x00ffcc});
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+// Luz
+const light = new THREE.DirectionalLight(0xffffff,1);
+light.position.set(5,5,5);
+scene.add(light);
+
+scene.add(new THREE.AmbientLight(0xffffff,0.3));
+
+// Ejes (X rojo, Y verde)
+const ejeX = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-5,0,0),
+        new THREE.Vector3(5,0,0)
+    ]),
+    new THREE.LineBasicMaterial({color:0xff0000})
+);
+scene.add(ejeX);
+
+const ejeY = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0,-5,0),
+        new THREE.Vector3(0,5,0)
+    ]),
+    new THREE.LineBasicMaterial({color:0x00ff00})
+);
+scene.add(ejeY);
+
+// Posición cámara
+camera.position.set(0,0,6);
+
+// Velocidades
+let velMov = 0.2;
+let velRot = 0.05;
+let velEsc = 0.05;
+
+// Control de teclas
+document.addEventListener("keydown", (e)=>{
+
+    // TRASLACIÓN
+    if(e.key === "a") cube.position.x -= velMov;
+    if(e.key === "d") cube.position.x += velMov;
+    if(e.key === "w") cube.position.y += velMov;
+    if(e.key === "s") cube.position.y -= velMov;
+
+    // ROTACIÓN
+    if(e.key === "q") cube.rotation.y -= velRot;
+    if(e.key === "e") cube.rotation.y += velRot;
+
+    // ESCALADO
+    if(e.key === "x"){
+        cube.scale.x += velEsc;
+        cube.scale.y += velEsc;
+        cube.scale.z += velEsc;
+    }
+
+    if(e.key === "z"){
+        cube.scale.x -= velEsc;
+        cube.scale.y -= velEsc;
+        cube.scale.z -= velEsc;
+    }
+});
+
+// Animación (solo renderiza)
+function animar(){
+    requestAnimationFrame(animar);
+    renderer.render(scene, camera);
+}
+
+animar();
+
+// Responsive
+window.addEventListener("resize", ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+</script>
+
+</body>
+</html>
