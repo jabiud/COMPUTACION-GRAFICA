@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Actividad 6</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f2027;
+    color:white;
+    display:flex;
+    height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:260px;
+    background:#111;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+}
+
+.logo{
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+.menu button{
+    width:100%;
+    padding:12px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#1e90ff;
+    color:white;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.menu button:hover{
+    transform:translateX(5px);
+}
+
+.activo{
+    background:#00ffcc !important;
+    color:black;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* HEADER */
+.header{
+    background:#1a1a1a;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.titulo{
+    font-size:18px;
+}
+
+.botones button{
+    margin-left:10px;
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* BOTONES */
+.full{background:#00c6ff;}
+.volver{background:#ff4d4d;}
+.modo{background:#666;}
+
+/* VISOR */
+.viewer{
+    flex:1;
+    position:relative;
+    background:#222;
+}
+
+iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    opacity:0;
+    transition:opacity 0.5s;
+}
+
+/* LOADER */
+.loader{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:20px;
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    0%{opacity:0.3;}
+    50%{opacity:1;}
+    100%{opacity:0.3;}
+}
+
+/* FOOTER */
+.footer{
+    padding:10px;
+    background:#111;
+    text-align:center;
+    font-size:13px;
+    opacity:0.7;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="logo">📄 Actividad 6</div>
+
+    <div class="menu">
+        <button onclick="cargarPDF(this,'CURVAS PARAMETRICAS.pdf','Curvas Paramétricas')">
+            📐 Curvas Paramétricas
+        </button>
+
+        <button onclick="cargarPDF(this,'MALLAS POLIGONALES.pdf','Mallas Poligonales')">
+            🧊 Mallas Poligonales
+        </button>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="titulo" id="titulo">Selecciona un documento</div>
+
+        <div class="botones">
+            <button class="full" onclick="pantallaCompleta()">Full ⛶</button>
+            <button class="volver" onclick="window.location.href='index.html'">⬅ Volver al menú</button>
+        </div>
+    </div>
+
+    <!-- VISOR -->
+    <div class="viewer" id="viewer">
+        <div class="loader" id="loader">Esperando selección</div>
+        <iframe id="visorPDF"></iframe>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Proyecto de Computación Gráfica - Joseph Abiud Cruz Acevedo
+    </div>
+
+</div>
+
+<script>
+
+const visor = document.getElementById("visorPDF");
+const loader = document.getElementById("loader");
+const titulo = document.getElementById("titulo");
+
+// Cargar PDF con animación
+function cargarPDF(btn,ruta,nombre){
+
+    loader.style.display = "block";
+    visor.style.opacity = "0";
+
+    titulo.textContent = nombre;
+
+    document.querySelectorAll(".menu button")
+        .forEach(b=>b.classList.remove("activo"));
+
+    btn.classList.add("activo");
+
+    visor.src = ruta;
+
+    visor.onload = () => {
+        loader.style.display = "none";
+        visor.style.opacity = "1";
+    };
+}
+
+// Pantalla completa
+function pantallaCompleta(){
+    const contenedor = document.getElementById("viewer");
+
+    if (!document.fullscreenElement) {
+        contenedor.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+</script>
+
+</body>
+</html>
