@@ -44,7 +44,7 @@ body{
 ⬅ Volver
 </button>
 
-<div class="info" id="info">
+<div class="info">
 Usa teclado: WASD mover | Q/E rotar | Z/X escalar
 </div>
 
@@ -81,7 +81,7 @@ scene.add(light);
 
 scene.add(new THREE.AmbientLight(0xffffff,0.3));
 
-// Ejes (X rojo, Y verde)
+// Ejes
 const ejeX = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(-5,0,0),
@@ -108,20 +108,34 @@ let velMov = 0.2;
 let velRot = 0.05;
 let velEsc = 0.05;
 
+// 🔥 LÍMITES DEL CUBO
+const limite = 4.5; // ajusta si quieres más espacio
+
 // Control de teclas
 document.addEventListener("keydown", (e)=>{
 
-    // TRASLACIÓN
-    if(e.key === "a") cube.position.x -= velMov;
-    if(e.key === "d") cube.position.x += velMov;
-    if(e.key === "w") cube.position.y += velMov;
-    if(e.key === "s") cube.position.y -= velMov;
+    // TRASLACIÓN CON LÍMITES
+    if(e.key === "a"){
+        cube.position.x = Math.max(-limite, cube.position.x - velMov);
+    }
+
+    if(e.key === "d"){
+        cube.position.x = Math.min(limite, cube.position.x + velMov);
+    }
+
+    if(e.key === "w"){
+        cube.position.y = Math.min(limite, cube.position.y + velMov);
+    }
+
+    if(e.key === "s"){
+        cube.position.y = Math.max(-limite, cube.position.y - velMov);
+    }
 
     // ROTACIÓN
     if(e.key === "q") cube.rotation.y -= velRot;
     if(e.key === "e") cube.rotation.y += velRot;
 
-    // ESCALADO
+    // ESCALADO CON LÍMITE MÍNIMO
     if(e.key === "x"){
         cube.scale.x += velEsc;
         cube.scale.y += velEsc;
@@ -129,13 +143,13 @@ document.addEventListener("keydown", (e)=>{
     }
 
     if(e.key === "z"){
-        cube.scale.x -= velEsc;
-        cube.scale.y -= velEsc;
-        cube.scale.z -= velEsc;
+        cube.scale.x = Math.max(0.3, cube.scale.x - velEsc);
+        cube.scale.y = Math.max(0.3, cube.scale.y - velEsc);
+        cube.scale.z = Math.max(0.3, cube.scale.z - velEsc);
     }
 });
 
-// Animación (solo renderiza)
+// Animación
 function animar(){
     requestAnimationFrame(animar);
     renderer.render(scene, camera);
